@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#container .width-default {
+    width: 850px;
+    height: 500px;
+    border: 10px #333 solid;
+}
+
+#container .width-extended {
+    width: 1024px;
+    height: 500px;
+}
+
+#container .width-default video {
+    width: 850px;
+    height: 500px;
+    background-color: #666;
+}
+
+#container .width-extended video {
+    width: 1024px;
+    height: 500px;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.background {
+    background-color: #000;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+}
+
+.hidde {
+    display: none;
+}
+
+/* 
+
+
+-------------- 
+
+
+*/
+
+
+/* The container must be positioned relative: *
+.custom-select {
+    position: relative;
+    font-family: Arial;
+}
+
+.custom-select select {
+    /*display: none;*/
+    /*hide original SELECT element: *
+}
+
+.select-selected {
+    background-color: DodgerBlue;
+}
+
+/* Style the arrow inside the select element: *
+.select-selected:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+}
+
+/* Point the arrow upwards when the select box is open (active): *
+.select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 7px;
+}
+
+/* style the items (options), including the selected item: *
+.select-items div,
+.select-selected {
+    color: #ffffff;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+}
+
+/* Style items (options): *
+.select-items {
+    position: absolute;
+    background-color: DodgerBlue;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
+
+/* Hide the items when the select box is closed: *
+.select-hide {
+    display: none;
+}
+
+.select-items div:hover,
+.same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+*/
