@@ -1,6 +1,7 @@
 'use strict';
 
 const videoElement = document.querySelector('video');
+const audioElement = document.querySelector('audio');
 const audioInputSelect = document.querySelector('select#audioSource');
 const videoSelect = document.querySelector('select#videoSource');
 const resolutionSelect = document.querySelector("select#resolution");
@@ -46,16 +47,11 @@ function handleError(error) {
     console.log('navigator.MediaDevices.getUserMedia error: ', error);
 }
 
-function start() {
-    if (window.stream) {
-        window.stream.getTracks().forEach(track => {
-            track.stop();
-        });
-    }
+function getContraints(screen_capture = false) {
     const audioSource = audioInputSelect.value;
     const videoSource = videoSelect.value;
-    const resolution = resolutionSelect.value.split('x');
 
+    const resolution = resolutionSelect.value.split('x');
     const constraints = {
         audio: {
             deviceId: audioSource ? {
@@ -66,22 +62,59 @@ function start() {
             sampleRate: 48000
         },
         video: {
-            deviceId: videoSource ? {
-                exact: videoSource
-            } : undefined,
+            deviceId: undefined,
             width: undefined,
             height: undefined,
-            aspectRatio: undefined
+            aspectRatio: undefined,
+            cursor: undefined
         }
     };
-
-    if(constraints.video.deviceId) {
-        constraints.video.width = { min: parseInt(resolution[0]) };
-        constraints.video.height = { min: parseInt(resolution[1]) };
-        constraints.video.aspectRatio = { ideal: 1.7777777778 };
+    if (!screen_capture) {
+        constraints.video.deviceId = videoSource ? {
+            exact: videoSource
+        } : undefined;
+        if (constraints.video.deviceId) {
+            constraints.video.width = {
+                min: parseInt(resolution[0])
+            };
+            constraints.video.height = {
+                min: parseInt(resolution[1])
+            };
+            constraints.video.aspectRatio = {
+                ideal: 1.7777777778
+            };
+        }
+    }
+    else {
+        constraints.video.cursor = "always";
     }
 
-    navigator.mediaDevices.getUserMedia(constraints).then(gotStream).then(gotDevices).catch(handleError);
+    return constraints;
+}
+
+function start(e, screen_capture = false) {
+    if (window.stream) {
+        window.stream.getTracks().forEach(track => {
+            track.stop();
+        });
+    }
+    if(window.audioStream) {
+        window.audioStream.getTracks().forEach(track => {
+            track.stop();
+        });
+    }
+
+    const constraints = getContraints(screen_capture);
+    if(! screen_capture) {
+        navigator.mediaDevices.getUserMedia(constraints).then(gotStream).then(gotDevices).catch(handleError);
+    }
+    else {
+        navigator.mediaDevices.getDisplayMedia(constraints).then(gotStream).catch(handleError);
+        navigator.mediaDevices.getUserMedia({ audio: constraints.audio, video: false }).then((stream) => {
+            window.audioStream = stream;
+            audioElement.srcObject = stream;
+        }).catch(handleError);
+    }
 }
 
 function setupGainNode(stream, volume = 1) {
@@ -118,6 +151,7 @@ document.querySelector('#toggle-screen').addEventListener('click', () => {
         container.classList.remove('row');
     }
 });
+document.querySelector('#start-screen').addEventListener('click', (e) => start(e, true));
 
 navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
 audioInputSelect.onchange = start;
